@@ -14,6 +14,7 @@ const schema = buildSchema(`
     type Query {
         title:String
         topics:[Topic]
+        getTopic(id: Int):Topic
     }
 `)
 
@@ -23,9 +24,21 @@ const topics = [
     {id:3, title:'js', body:'js is ...'}
 ]
 
+const getTopic = function(args){
+    const id = args.id;
+    const topic = topics.find(topic=>topic.id === id);
+    for(let i=0; i<topics.length; i++){
+      if(topics[i].id === id){
+        return topics[i]
+      }
+    }
+    return null;
+}
+
 var root = {
     title:'egoing blog',
-    topics:topics
+    topics:topics,
+    getTopic:getTopic
 }
 
 app.use('/graphql', graphqlHTTP({

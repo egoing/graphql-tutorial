@@ -3,7 +3,28 @@
         <h1>Graphql!</h1>
         <h2 id="title"></h2>
         <ul id="topics"></ul> 
+        <article></article> 
         <script>
+            function setTopic(id){
+                fetch('/graphql', {
+                method:'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                        query: `
+                            query getTopicSyntax($topicId:Int){
+                                getTopic(id: $topicId){id title body}
+                            }
+                        `,
+                        variables: {topicId:id}
+                    })
+                })
+                    .then(type=>type.json())
+                    .then(result=>{
+                        const topic = result.data.getTopic;
+                        const tag = `<h2>${topic.title}</h2>${topic.body}`;
+                        document.querySelector('article').innerHTML = tag;
+                    })
+            }
             function init(){
                 fetch('/graphql', {
                     method:'POST',
@@ -26,6 +47,10 @@
                             <li>
                                 <a 
                                     href="topics/${topics[i].id}" 
+                                    onClick="
+                                        event.preventDefault();
+                                        setTopic(${topics[i].id})
+                                    "
                                 >
                                     ${topics[i].title}
                                 </a>
