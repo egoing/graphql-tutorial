@@ -1,5 +1,36 @@
 <html>
     <body>
         <h1>Graphql!</h1>
+        <h2 id="title"></h2>
+        <script>
+            function init(){
+                fetch('/graphql', {
+                    method:'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: `
+                        {
+                            title
+                        }`
+                    })
+                })
+                .then(type=>type.json())
+                .then(result=>{
+                    document.querySelector('#title').innerHTML = result.data.title;
+                    const listTag = result.data.topics.map(topic=>{
+                    return `
+                        <li>
+                            <a 
+                                href="topics/${topic.id}" 
+                            >
+                                ${topic.title}
+                            </a>
+                        </li>`;
+                    }).join('');
+                    document.querySelector('#topics').innerHTML = listTag;
+                })
+            }
+            init();
+        </script>
     </body>
 </html>
