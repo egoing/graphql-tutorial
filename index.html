@@ -2,6 +2,7 @@
     <body>
         <h1>Graphql!</h1>
         <h2 id="title"></h2>
+        <ul id="topics"></ul> 
         <script>
             function init(){
                 fetch('/graphql', {
@@ -11,22 +12,25 @@
                         query: `
                         {
                             title
+                            topics{id title}
                         }`
                     })
                 })
                 .then(type=>type.json())
                 .then(result=>{
                     document.querySelector('#title').innerHTML = result.data.title;
-                    const listTag = result.data.topics.map(topic=>{
-                    return `
-                        <li>
-                            <a 
-                                href="topics/${topic.id}" 
-                            >
-                                ${topic.title}
-                            </a>
-                        </li>`;
-                    }).join('');
+                    let listTag = '';
+                    const topics = result.data.topics;
+                    for(let i=0; i<topics.length; i++){
+                        listTag += `
+                            <li>
+                                <a 
+                                    href="topics/${topics[i].id}" 
+                                >
+                                    ${topics[i].title}
+                                </a>
+                            </li>`
+                    }
                     document.querySelector('#topics').innerHTML = listTag;
                 })
             }
