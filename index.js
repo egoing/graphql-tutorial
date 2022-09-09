@@ -16,7 +16,12 @@ const schema = buildSchema(`
         topics:[Topic]
         getTopic(id: Int):Topic
     }
+    type Mutation {
+        createTopic(title: String, body: String): Topic 
+    }
 `)
+
+let nextId = 4;
 
 const topics = [
     {id:1, title:'html', body:'html is ...'},
@@ -35,10 +40,22 @@ const getTopic = function(args){
     return null;
 }
 
+const createTopic = function(args){
+    const newTopic = {
+        id:nextId,
+        title:args.title,
+        body:args.body
+    };
+    topics.push(newTopic);
+    nextId = nextId + 1;
+    return newTopic;
+}
+
 var root = {
     title:'egoing blog',
     topics:topics,
-    getTopic:getTopic
+    getTopic:getTopic,
+    createTopic:createTopic
 }
 
 app.use('/graphql', graphqlHTTP({

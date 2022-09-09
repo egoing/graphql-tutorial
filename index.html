@@ -59,7 +59,32 @@
                     document.querySelector('#topics').innerHTML = listTag;
                 })
             }
+            function createHandle(){
+                const title = prompt('title?');
+                const body = prompt('body?');
+                fetch('/graphql', {
+                method:'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    query: `
+                    mutation createTopic($title: String, $body: String){
+                        createTopic(title: $title, body: $body) {id}
+                    }
+                    `,
+                    variables:{
+                    title:title,
+                    body:body
+                    }
+                })
+                })
+                .then(type=>type.json())
+                .then(result=>{
+                    init();
+                    setTopic(result.data.createTopic.id);
+                })
+            }
             init();
         </script>
+        <input type="Button" value="create" onClick="createHandle();">
     </body>
 </html>
